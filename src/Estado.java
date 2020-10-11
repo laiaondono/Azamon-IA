@@ -1,3 +1,132 @@
+import IA.Azamon.*;
+import java.util.*;
+
 public class Estado {
+    private static Transporte ofertas;
+    private static Paquetes paquetes;
+    private ArrayList<Integer> asignacion;
+    private ArrayList<Double> capacidad;
+    private Double precio;
+    private Integer felicidad;
+
+    public Estado (int nPaq, int seedTransporte, int seedPaquetes, double proporcion) {
+        paquetes = new Paquetes(nPaq, seedPaquetes);
+        ofertas = new Transporte(paquetes, proporcion, seedTransporte);
+        asignacion = new ArrayList<>(nPaq);
+        for (int i = 0; i < nPaq; ++i)
+            asignacion.add(-1);
+        capacidad = new ArrayList<>(ofertas.size());
+        precio = 0.0;
+        felicidad = 0;
+    }
+
+
+    public boolean esEstadoFinal() {
+        return false;
+    }
+
+    public void generarSolucionInicial1() {
+        Collections.sort(paquetes, new Comparator<Paquete>() {
+            @Override
+            public int compare(Paquete p1, Paquete p2) { //ordre ascendent
+                return Integer.compare(p1.getPrioridad(), p2.getPrioridad());
+            }
+        });
+
+        Collections.sort(ofertas, new Comparator<Oferta>() {
+            @Override
+            public int compare(Oferta o1, Oferta o2) { //ordre ascendent
+                return Integer.compare(o1.getDias(), o2.getDias());
+            }
+        });
+
+        for (int i = 0; i < ofertas.size(); ++i)
+            capacidad.add(ofertas.get(i).getPesomax());
+
+        for (int i = 0; i < paquetes.size(); ++i) {
+            double peso = paquetes.get(i).getPeso();
+            for (int j = 0; j < capacidad.size(); ++j) {
+                if (capacidad.get(j) >= peso) {
+                    asignacion.set(i, j);
+                    capacidad.set(j, capacidad.get(j) - peso);
+                    break;
+                }
+            }
+        }
+        calcularPrecio();
+        calcularFelicidad();
+    }
+
+    public void calcularPrecio() {
+        precio = 0.0;
+        for (int i = 0; i < ofertas.size(); ++i) {
+            precio += (ofertas.get(i).getPesomax() - capacidad.get(i)) * ofertas.get(i).getPrecio();
+            if (ofertas.get(i).getDias() == 5) precio += (ofertas.get(i).getPesomax() - capacidad.get(i)) * 0.5;
+            else if (ofertas.get(i).getDias() >= 3) precio += (ofertas.get(i).getPesomax() - capacidad.get(i)) * 0.25;
+        }
+    }
+
+    public void calcularFelicidad() {
+        felicidad = 0;
+        for (int i = 0; i < asignacion.size(); ++i) {
+            int prioridad = paquetes.get(i).getPrioridad();
+            int dias = ofertas.get(asignacion.get(i)).getDias();
+            if (prioridad == 1 && dias == 1) ++felicidad;
+            else if (prioridad == 2) {
+                if (dias == 3) ++felicidad;
+                else if (dias == 2) felicidad += 2;
+                else if (dias == 1) felicidad += 3;
+            }
+        }
+    }
+
+    public void generarSolucionInicial2() {
+    }
+
+    public boolean moverPaquete(int p, int o) {
+        if (capacidad.get(o) >= paquetes.get(p).getPeso()) {
+            if (paquetes.get(p).getPrioridad() == 0 && ofertas.get(o).getDias() == 1 ||
+                    paquetes.get(p).getPrioridad() == 1 && ofertas.get(o).getDias() <= 3) {
+                capacidad.set(asignacion.get(p), capacidad.get(asignacion.get(p)) + paquetes.get(p).getPeso());
+                asignacion.set(p, o);
+                capacidad.set(o, capacidad.get(o) - paquetes.get(p).getPeso());
+
+                calcularPrecio();
+                calcularFelicidad();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean intercambiarPaquetes(int p1, int p2) {
+        int o1 = asignacion.get(p1);
+        int o2 = asignacion.get(p2);
+
+        if (capacidad.get(o2) + paquetes.get(p2).getPeso() >= paquetes.get(p1).getPeso() &&
+                capacidad.get(o1) + paquetes.get(p1).getPeso() >= paquetes.get(p2).getPeso()) {
+            if ((paquetes.get(p1).getPrioridad() == 0 && ofertas.get(o2).getDias() == 1 ||
+                    paquetes.get(p1).getPrioridad() == 1 && ofertas.get(o2).getDias() <= 3) &&
+                    (paquetes.get(p2).getPrioridad() == 0 && ofertas.get(o1).getDias() == 1 ||
+                    paquetes.get(p2).getPrioridad() == 1 && ofertas.get(o1).getDias() <= 3)) {
+                capacidad.set(asignacion.get(p1), capacidad.get(asignacion.get(p1)) + paquetes.get(p1).getPeso());
+                asignacion.set(p1, o2);
+                capacidad.set(o2, capacidad.get(o2) - paquetes.get(p1).getPeso());
+
+                capacidad.set(asignacion.get(p2), capacidad.get(asignacion.get(p2)) + paquetes.get(p2).getPeso());
+                asignacion.set(p2, o1);
+                capacidad.set(o1, capacidad.get(o1) - paquetes.get(p2).getPeso());
+
+                calcularPrecio();
+                calcularFelicidad();
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
+
+
+
+
