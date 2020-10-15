@@ -6,12 +6,12 @@ public class Estado {
     private static Paquetes paquetes;
     private ArrayList<Integer> asignacion;
     private ArrayList<Double> capacidad;
-    private Double precio;
-    private Integer felicidad;
+    private double precio;
+    private int felicidad;
 
-    public Estado (int nPaq, int seedTransporte, int seedPaquetes, double proporcion) {
-        paquetes = new Paquetes(nPaq, seedPaquetes);
-        ofertas = new Transporte(paquetes, proporcion, seedTransporte);
+    public Estado(int nPaq, int seed, double proporcion) {
+        paquetes = new Paquetes(nPaq, seed);
+        ofertas = new Transporte(paquetes, proporcion, seed);
         asignacion = new ArrayList<>(nPaq);
         for (int i = 0; i < nPaq; ++i)
             asignacion.add(-1);
@@ -20,6 +20,38 @@ public class Estado {
         felicidad = 0;
     }
 
+    public Estado(Estado e) {
+        paquetes = e.getPaquetes();
+        ofertas = e.getOfertas();
+        asignacion = e.getAsignacion();
+        capacidad = e.getCapacidad();
+        precio = e.getPrecio();
+        felicidad = e.getFelicidad();
+    }
+
+    public Paquetes getPaquetes() {
+        return paquetes;
+    }
+
+    public Transporte getOfertas() {
+        return ofertas;
+    }
+
+    public ArrayList<Integer> getAsignacion() {
+        return asignacion;
+    }
+
+    public ArrayList<Double> getCapacidad() {
+        return capacidad;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public int getFelicidad() {
+        return felicidad;
+    }
 
     public boolean esEstadoFinal() {
         return false;
