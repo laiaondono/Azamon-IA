@@ -113,6 +113,46 @@ public class Estado {
     }
 
     public void generarSolucionInicial2() {
+        ArrayList<Integer> Prioritat0 = new ArrayList<>();
+        ArrayList<Integer> Prioritat1 = new ArrayList<>();
+        ArrayList<Integer> Prioritat2 = new ArrayList<>();
+        Random random = new Random();
+
+        for(int i = 0; i < ofertas.size(); ++i){
+            if (ofertas.get(i).getDias() == 1)
+                Prioritat0.add(i);
+            else if (ofertas.get(i).getDias() <= 3)
+                Prioritat1.add(i);
+            else
+                Prioritat2.add(i);
+        }
+
+        for (int i = 0; i < ofertas.size(); ++i)
+            capacidad.add(ofertas.get(i).getPesomax());
+
+        for(int i = 0; i < paquetes.size(); ++i){
+            int prioritat = paquetes.get(i).getPrioridad();
+            int oferta;
+            boolean assignat = false;
+            do {
+                if (prioritat == 0)
+                    oferta = Prioritat0.get(random.nextInt(Prioritat0.size()));
+
+                else if (prioritat == 1)
+                    oferta = Prioritat1.get(random.nextInt(Prioritat1.size()));
+                else
+                    oferta = Prioritat2.get(random.nextInt(Prioritat2.size()));
+
+                if (capacidad.get(oferta) >= paquetes.get(i).getPeso()) {
+                    asignacion.set(i, oferta);
+                    capacidad.set(oferta, capacidad.get(oferta) - paquetes.get(i).getPeso());
+                    assignat = true;
+                }
+            } while(!assignat);
+        }
+
+        calcularPrecio();
+        calcularFelicidad();
     }
 
     public boolean moverPaquete(int p, int o) {

@@ -86,8 +86,9 @@ public class Problema {
 
         printActions(agent.getActions());
 
-        System.out.print(((Estado) search.getGoalState()).toString());
-        //System.out.println("\n" + ((Estado) search.getGoalState()).correspondenciasToString()); todo
+        System.out.println(((Estado) search.getGoalState()).toString());
+        System.out.println(((Estado) search.getGoalState()).getPrecio());
+
     }
 
     private static void BusquedaSimulatedAnnealing(Estado e, int funcionHeuristica) throws Exception {
@@ -100,7 +101,6 @@ public class Problema {
         printActions(agent.getActions());
 
         System.out.print(((Estado) search.getGoalState()).toString());
-        //System.out.println("\n" + ((Estado) search.getGoalState()).correspondenciasToString()); todo
     }
 
     private static void printActions(List actions) {
