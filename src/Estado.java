@@ -8,8 +8,9 @@ public class Estado {
     private ArrayList<Double> capacidad;
     private double precio;
     private int felicidad;
+    private int operadores;
 
-    public Estado(int nPaq, int seed, double proporcion) {
+    public Estado(int nPaq, int seed, double proporcion, int operadores) {
         paquetes = new Paquetes(nPaq, seed);
         ofertas = new Transporte(paquetes, proporcion, seed);
         asignacion = new ArrayList<>(nPaq);
@@ -18,6 +19,8 @@ public class Estado {
         capacidad = new ArrayList<>(ofertas.size());
         precio = 0.0;
         felicidad = 0;
+        this.operadores = operadores;
+
     }
 
     public Estado(Estado e) {
@@ -27,6 +30,7 @@ public class Estado {
         capacidad = e.getCapacidad();
         precio = e.getPrecio();
         felicidad = e.getFelicidad();
+        operadores = e.getOperadores();
     }
 
     public Paquetes getPaquetes() {
@@ -53,8 +57,35 @@ public class Estado {
         return felicidad;
     }
 
+    public int getOperadores() {
+        return operadores;
+    }
+
     public boolean esEstadoFinal() {
         return false;
+    }
+
+    public void calcularPrecio() {
+        precio = 0.0;
+        for (int i = 0; i < ofertas.size(); ++i) {
+            precio += (ofertas.get(i).getPesomax() - capacidad.get(i)) * ofertas.get(i).getPrecio();
+            if (ofertas.get(i).getDias() == 5) precio += (ofertas.get(i).getPesomax() - capacidad.get(i)) * 0.5;
+            else if (ofertas.get(i).getDias() >= 3) precio += (ofertas.get(i).getPesomax() - capacidad.get(i)) * 0.25;
+        }
+    }
+
+    public void calcularFelicidad() {
+        felicidad = 0;
+        for (int i = 0; i < asignacion.size(); ++i) {
+            int prioridad = paquetes.get(i).getPrioridad();
+            int dias = ofertas.get(asignacion.get(i)).getDias();
+            if (prioridad == 1 && dias == 1) ++felicidad;
+            else if (prioridad == 2) {
+                if (dias == 3) ++felicidad;
+                else if (dias == 2) felicidad += 2;
+                else if (dias == 1) felicidad += 3;
+            }
+        }
     }
 
     public void generarSolucionInicial1() {
@@ -89,42 +120,19 @@ public class Estado {
         calcularFelicidad();
     }
 
-    public void calcularPrecio() {
-        precio = 0.0;
-        for (int i = 0; i < ofertas.size(); ++i) {
-            precio += (ofertas.get(i).getPesomax() - capacidad.get(i)) * ofertas.get(i).getPrecio();
-            if (ofertas.get(i).getDias() == 5) precio += (ofertas.get(i).getPesomax() - capacidad.get(i)) * 0.5;
-            else if (ofertas.get(i).getDias() >= 3) precio += (ofertas.get(i).getPesomax() - capacidad.get(i)) * 0.25;
-        }
-    }
-
-    public void calcularFelicidad() {
-        felicidad = 0;
-        for (int i = 0; i < asignacion.size(); ++i) {
-            int prioridad = paquetes.get(i).getPrioridad();
-            int dias = ofertas.get(asignacion.get(i)).getDias();
-            if (prioridad == 1 && dias == 1) ++felicidad;
-            else if (prioridad == 2) {
-                if (dias == 3) ++felicidad;
-                else if (dias == 2) felicidad += 2;
-                else if (dias == 1) felicidad += 3;
-            }
-        }
-    }
-
     public void generarSolucionInicial2() {
-        ArrayList<Integer> Prioritat0 = new ArrayList<>();
-        ArrayList<Integer> Prioritat1 = new ArrayList<>();
-        ArrayList<Integer> Prioritat2 = new ArrayList<>();
+        ArrayList<Integer> Prioridad0 = new ArrayList<>();
+        ArrayList<Integer> Prioridad1 = new ArrayList<>();
+        ArrayList<Integer> Prioridad2 = new ArrayList<>();
         Random random = new Random();
 
         for(int i = 0; i < ofertas.size(); ++i){
             if (ofertas.get(i).getDias() == 1)
-                Prioritat0.add(i);
+                Prioridad0.add(i);
             else if (ofertas.get(i).getDias() <= 3)
-                Prioritat1.add(i);
+                Prioridad1.add(i);
             else
-                Prioritat2.add(i);
+                Prioridad2.add(i);
         }
 
         for (int i = 0; i < ofertas.size(); ++i)
@@ -136,12 +144,11 @@ public class Estado {
             boolean assignat = false;
             do {
                 if (prioritat == 0)
-                    oferta = Prioritat0.get(random.nextInt(Prioritat0.size()));
-
+                    oferta = Prioridad0.get(random.nextInt(Prioridad0.size()));
                 else if (prioritat == 1)
-                    oferta = Prioritat1.get(random.nextInt(Prioritat1.size()));
+                    oferta = Prioridad1.get(random.nextInt(Prioridad1.size()));
                 else
-                    oferta = Prioritat2.get(random.nextInt(Prioritat2.size()));
+                    oferta = Prioridad2.get(random.nextInt(Prioridad2.size()));
 
                 if (capacidad.get(oferta) >= paquetes.get(i).getPeso()) {
                     asignacion.set(i, oferta);
@@ -155,10 +162,10 @@ public class Estado {
         calcularFelicidad();
     }
 
-    public boolean moverPaquete(int p, int o) {
+    public boolean moverPaquete(int p, int o) { // todo no mirem si p ja esta a o
         if (capacidad.get(o) >= paquetes.get(p).getPeso()) {
-            if (paquetes.get(p).getPrioridad() == 0 && ofertas.get(o).getDias() == 1 ||
-                    paquetes.get(p).getPrioridad() == 1 && ofertas.get(o).getDias() <= 3) {
+            if ((paquetes.get(p).getPrioridad() == 0 && ofertas.get(o).getDias() == 1) ||
+                    (paquetes.get(p).getPrioridad() == 1 && ofertas.get(o).getDias() <= 3) || paquetes.get(p).getPrioridad() == 2) {
                 capacidad.set(asignacion.get(p), capacidad.get(asignacion.get(p)) + paquetes.get(p).getPeso());
                 asignacion.set(p, o);
                 capacidad.set(o, capacidad.get(o) - paquetes.get(p).getPeso());
@@ -171,16 +178,16 @@ public class Estado {
         return false;
     }
 
-    public boolean intercambiarPaquetes(int p1, int p2) {
+    public boolean intercambiarPaquetes(int p1, int p2) { //TODO docu no mirem si o2 == o1 perque al aplicar la funcio heuristica dona el mateix valor
         int o1 = asignacion.get(p1);
         int o2 = asignacion.get(p2);
 
         if (capacidad.get(o2) + paquetes.get(p2).getPeso() >= paquetes.get(p1).getPeso() &&
                 capacidad.get(o1) + paquetes.get(p1).getPeso() >= paquetes.get(p2).getPeso()) {
-            if ((paquetes.get(p1).getPrioridad() == 0 && ofertas.get(o2).getDias() == 1 ||
-                    paquetes.get(p1).getPrioridad() == 1 && ofertas.get(o2).getDias() <= 3) &&
-                    (paquetes.get(p2).getPrioridad() == 0 && ofertas.get(o1).getDias() == 1 ||
-                    paquetes.get(p2).getPrioridad() == 1 && ofertas.get(o1).getDias() <= 3)) {
+            if (((paquetes.get(p1).getPrioridad() == 0 && ofertas.get(o2).getDias() == 1) ||
+                    (paquetes.get(p1).getPrioridad() == 1 && ofertas.get(o2).getDias() <= 3) || paquetes.get(p1).getPrioridad() == 2) &&
+                    ((paquetes.get(p2).getPrioridad() == 0 && ofertas.get(o1).getDias() == 1) ||
+                            (paquetes.get(p2).getPrioridad() == 1 && ofertas.get(o1).getDias() <= 3) || paquetes.get(p2).getPrioridad() == 2)) {
                 capacidad.set(asignacion.get(p1), capacidad.get(asignacion.get(p1)) + paquetes.get(p1).getPeso());
                 asignacion.set(p1, o2);
                 capacidad.set(o2, capacidad.get(o2) - paquetes.get(p1).getPeso());
