@@ -8,6 +8,8 @@ public class Estado {
     private ArrayList<Double> capacidad;
     private double precio;
     private int felicidad;
+
+    //atributos usados para los experimentos
     private int operadores;
     private int ponderacion;
 
