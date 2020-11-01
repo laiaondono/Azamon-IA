@@ -90,7 +90,9 @@ public class Problema {
                 System.out.println("Introduce la proporción de paquetes en cada oferta");
                 double proporcion = in.nextDouble();
 
-                Estado e = new Estado(nPaq, seed, proporcion, 1, 11);
+                Estado e;
+                if (op == 1) e = new Estado(nPaq, seed, proporcion, 1, 11);
+                else e = new Estado(nPaq, seed, proporcion, 1, 10);
 
                 System.out.println("A continuación, elije la solución inicial");
                 System.out.println("1: Prioriza la felicidad");
@@ -398,11 +400,15 @@ public class Problema {
         Random random = new Random();
         ArrayList<Long> tiemposEjec = new ArrayList<>();
         ArrayList<Double> costes = new ArrayList<>();
+        ArrayList<Double> felicidad2 = new ArrayList<>();
 
         for (int i = 0; i < 20; ++i) {
             tiemposEjec.add((long)0);
             costes.add(0.0);
+            felicidad2.add(0.0);
         }
+
+
 
         for (int i = 0; i < 10; ++i) {
             int seed = random.nextInt(10000);
@@ -419,9 +425,17 @@ public class Problema {
             }
         }
 
+
+        for (int i = 0; i < felicidad.size(); ++i) {
+            felicidad2.set(i % 20, felicidad2.get(i % 20) + felicidad.get(i));
+        }
+
+
+
         for (int i = 0; i < 20; ++i) {
             tiemposEjec.set(i, tiemposEjec.get(i) /10);
             costes.set(i, costes.get(i)/10);
+            felicidad2.set(i, felicidad2.get(i)/10);
         }
 
         System.out.println("costes " + costes);
@@ -429,6 +443,7 @@ public class Problema {
 
         generarGraficaLineas2(costes);
         generarGraficaLineas3(tiemposEjec);
+        generarGraficaLineas4(felicidad2);
     }
 
     private static void experimento7() throws Exception {
@@ -501,6 +516,7 @@ public class Problema {
         System.out.println("Precio = " + ((Estado) search.getGoalState()).getPrecio());
         System.out.println("Felicidad = " + ((Estado) search.getGoalState()).getFelicidad());
 
+        /*TODO
         FileWriter fichero = null;
         fichero = new FileWriter("/Users/laia.ondono/Documents/AAAquart-Q1/ia/laboratori/practica1/IA-Busqueda-Local/exp5.txt", true);
         PrintWriter pw = new PrintWriter(fichero);
@@ -510,6 +526,8 @@ public class Problema {
             pw.print(String.format("%.2f", ((Estado) search.getGoalState()).getPrecio()) + " ");
         fichero.close();
         ++niteracio;
+        */
+        felicidad.add(((Estado) search.getGoalState()).getFelicidad());
 
         return ((Estado) search.getGoalState()).getPrecio();
     }
@@ -582,8 +600,8 @@ public class Problema {
         chart.setVisible(true);
     }
 
-    private static void generarGraficaLineas4(ArrayList<Double> costes) {
-        LineChart chart = new LineChart(costes, 1);
+    private static void generarGraficaLineas4(ArrayList<Double> felicidad) {
+        LineChart chart = new LineChart(felicidad, 1);
         chart.setAlwaysOnTop(true);
         chart.pack();
         chart.setSize(600, 400);
