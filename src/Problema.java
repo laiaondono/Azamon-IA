@@ -408,8 +408,6 @@ public class Problema {
             felicidad2.add(0.0);
         }
 
-
-
         for (int i = 0; i < 10; ++i) {
             int seed = random.nextInt(10000);
             for (int pond = 1; pond <= 20; ++pond) {
@@ -425,12 +423,9 @@ public class Problema {
             }
         }
 
-
         for (int i = 0; i < felicidad.size(); ++i) {
             felicidad2.set(i % 20, felicidad2.get(i % 20) + felicidad.get(i));
         }
-
-
 
         for (int i = 0; i < 20; ++i) {
             tiemposEjec.set(i, tiemposEjec.get(i) /10);
@@ -516,7 +511,7 @@ public class Problema {
         System.out.println("Precio = " + ((Estado) search.getGoalState()).getPrecio());
         System.out.println("Felicidad = " + ((Estado) search.getGoalState()).getFelicidad());
 
-        /*TODO
+
         FileWriter fichero = null;
         fichero = new FileWriter("/Users/laia.ondono/Documents/AAAquart-Q1/ia/laboratori/practica1/IA-Busqueda-Local/exp5.txt", true);
         PrintWriter pw = new PrintWriter(fichero);
@@ -526,7 +521,7 @@ public class Problema {
             pw.print(String.format("%.2f", ((Estado) search.getGoalState()).getPrecio()) + " ");
         fichero.close();
         ++niteracio;
-        */
+
         felicidad.add(((Estado) search.getGoalState()).getFelicidad());
 
         return ((Estado) search.getGoalState()).getPrecio();
