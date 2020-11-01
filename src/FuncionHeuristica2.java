@@ -5,6 +5,6 @@ public class FuncionHeuristica2 implements HeuristicFunction {
     @Override
     public double getHeuristicValue(Object o) {
         Estado e = (Estado) o;
-        return e.getPrecio() - 5 * e.getFelicidad();
+        return e.getPrecio() - e.getPonderacion() * e.getFelicidad();
     }
 }

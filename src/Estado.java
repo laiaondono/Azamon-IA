@@ -9,8 +9,9 @@ public class Estado {
     private double precio;
     private int felicidad;
     private int operadores;
+    private int ponderacion;
 
-    public Estado(int nPaq, int seed, double proporcion, int operadores) {
+    public Estado(int nPaq, int seed, double proporcion, int operadores, int ponderacion) {
         paquetes = new Paquetes(nPaq, seed);
         ofertas = new Transporte(paquetes, proporcion, seed);
         asignacion = new ArrayList<>(nPaq);
@@ -20,6 +21,7 @@ public class Estado {
         precio = 0.0;
         felicidad = 0;
         this.operadores = operadores;
+        this.ponderacion = ponderacion;
 
     }
 
@@ -31,6 +33,7 @@ public class Estado {
         precio = e.getPrecio();
         felicidad = e.getFelicidad();
         operadores = e.getOperadores();
+        ponderacion = e.getPonderacion();
     }
 
     public Paquetes getPaquetes() {
@@ -59,6 +62,10 @@ public class Estado {
 
     public int getOperadores() {
         return operadores;
+    }
+
+    public int getPonderacion() {
+        return ponderacion;
     }
 
     public boolean esEstadoFinal() {
