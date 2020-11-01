@@ -100,14 +100,14 @@ public class Estado {
     public void generarSolucionInicial1() {
         Collections.sort(paquetes, new Comparator<Paquete>() {
             @Override
-            public int compare(Paquete p1, Paquete p2) { //ordre ascendent
+            public int compare(Paquete p1, Paquete p2) { //orden ascendente
                 return Integer.compare(p1.getPrioridad(), p2.getPrioridad());
             }
         });
 
         Collections.sort(ofertas, new Comparator<Oferta>() {
             @Override
-            public int compare(Oferta o1, Oferta o2) { //ordre ascendent
+            public int compare(Oferta o1, Oferta o2) { //orden ascendente
                 return Integer.compare(o1.getDias(), o2.getDias());
             }
         });
@@ -171,7 +171,7 @@ public class Estado {
         calcularFelicidad();
     }
 
-    public boolean moverPaquete(int p, int o) { // todo no mirem si p ja esta a o
+    public boolean moverPaquete(int p, int o) {
         if (capacidad.get(o) >= paquetes.get(p).getPeso()) {
             if ((paquetes.get(p).getPrioridad() == 0 && ofertas.get(o).getDias() == 1) ||
                     (paquetes.get(p).getPrioridad() == 1 && ofertas.get(o).getDias() <= 3) || paquetes.get(p).getPrioridad() == 2) {
@@ -187,7 +187,7 @@ public class Estado {
         return false;
     }
 
-    public boolean intercambiarPaquetes(int p1, int p2) { //TODO docu no mirem si o2 == o1 perque al aplicar la funcio heuristica dona el mateix valor
+    public boolean intercambiarPaquetes(int p1, int p2) {
         int o1 = asignacion.get(p1);
         int o2 = asignacion.get(p2);
 

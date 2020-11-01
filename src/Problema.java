@@ -16,7 +16,7 @@ public class Problema {
     public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
         Random random = new Random();
-        //f heursitica, sol inicial, algorisme, seed
+
         System.out.println("Que deseas realizar?");
         System.out.println("Hill Climbing: 1");
         System.out.println("Simulated Annealing: 2");
@@ -33,8 +33,8 @@ public class Problema {
             if (op == 3) {
                 System.out.println("Qué experimento deseas realizar? Introduce el número del experimento del apartado 3.5");
                 op = in.nextInt();
-                while (op < 1 || op > 9) {
-                    System.out.println("Introduce un valor del 1 al 9");
+                while (op < 1 || op > 9 || op == 8) {
+                    System.out.println("Introduce un valor del 1 al 9 (exceptuando el 8)");
                     op = in.nextInt();
                 }
 
@@ -59,9 +59,6 @@ public class Problema {
                         break;
                     case 7:
                         experimento7();
-                        break;
-                    case 8:
-                        experimento8();
                         break;
                     case 9:
                         experimento9();
@@ -117,7 +114,7 @@ public class Problema {
                 if (op == 1)
                     BusquedaHillClimbing(e, funcHeur);
                 else
-                    BusquedaSimulatedAnnealing(e, funcHeur, 10000, 100, 5, 0.001); //Todo
+                    BusquedaSimulatedAnnealing(e, funcHeur, 10000, 100, 25, 0.0001);
 
                 System.out.println("Que deseas realizar?");
                 System.out.println("Hill Climbing: 1");
@@ -486,14 +483,10 @@ public class Problema {
         generarGraficaLineas4(felicidad2);
     }
 
-    private static void experimento8() { //todo
-    }
-
     private static void experimento9() throws Exception {
         Estado e = new Estado(100, 1234, 1.2, 1, 5);
         e.generarSolucionInicial2();
         BusquedaHillClimbing(e, 1);
-
     }
 
     public static double BusquedaHillClimbing(Estado e, int funcionHeuristica) throws Exception {
@@ -510,7 +503,6 @@ public class Problema {
 
         System.out.println("Precio = " + ((Estado) search.getGoalState()).getPrecio());
         System.out.println("Felicidad = " + ((Estado) search.getGoalState()).getFelicidad());
-
 
         FileWriter fichero = null;
         fichero = new FileWriter("/Users/laia.ondono/Documents/AAAquart-Q1/ia/laboratori/practica1/IA-Busqueda-Local/exp5.txt", true);
