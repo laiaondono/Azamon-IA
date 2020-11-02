@@ -140,7 +140,6 @@ public class Problema {
         long ini = System.currentTimeMillis();
         SearchAgent agent = new SearchAgent(problema, search);
         long fin = System.currentTimeMillis();
-        System.out.println("Tiempo de ejecución = " + (fin - ini) + " ms");
 
         imprimirAcciones(agent.getActions());
 
@@ -295,13 +294,11 @@ public class Problema {
             }
             cnt = 0;
         }
-        for (int i = 0; i < costes.size(); ++i)
-            costes.set(i, costes.get(i)/10);
+        for (int i = 0; i < costes.size(); ++i) {
+            costes.set(i, costes.get(i) / 10);
+            costes.set(i, (double) Math.round(costes.get(i) * 100d) / 100d);
+        }
 
-        for (int i = 0; i < costes.size(); ++i)
-            costes.set(i, (double)Math.round(costes.get(i) * 100d) / 100d);
-
-        System.out.println("costes final: " + costes);
         generarGraficaBarras(costes, k, lambda);
     }
 
@@ -325,11 +322,10 @@ public class Problema {
             }
             cnt = 0;
         }
-        for (int i = 0; i < costes.size(); ++i)
-            costes.set(i, costes.get(i)/10);
-
-        for (int i = 0; i < costes.size(); ++i)
-            costes.set(i, (double)Math.round(costes.get(i) * 100d) / 100d);
+        for (int i = 0; i < costes.size(); ++i) {
+            costes.set(i, costes.get(i) / 10);
+            costes.set(i, (double) Math.round(costes.get(i) * 100d) / 100d);
+        }
 
         System.out.println("costes final: " + costes);
         generarGraficaBarras2(costes);
@@ -354,7 +350,6 @@ public class Problema {
 
         for (int i = 0; i < 10; ++i) {
             int seed = random.nextInt(10000);
-            System.out.println("semilla " + seed);
             double proporcion = 1.2;
 
             while (proporcion <= 5.1) {
@@ -364,7 +359,6 @@ public class Problema {
                 long ini = System.currentTimeMillis();
                 BusquedaHillClimbing(e, 1);
                 long fin = System.currentTimeMillis();
-                System.out.println("temps " + (fin-ini));
                 if (i == 0)
                     t1.add(fin - ini);
                 else if (i == 1)
@@ -389,17 +383,6 @@ public class Problema {
                 proporcion += 0.2;
             }
         }
-        System.out.println("t1: " + t1);
-        System.out.println("t2: " + t2);
-        System.out.println("t3: " + t3);
-        System.out.println("t4: " + t4);
-        System.out.println("t5: " + t5);
-        System.out.println("t6: " + t6);
-        System.out.println("t7: " + t7);
-        System.out.println("t8: " + t8);
-        System.out.println("t9: " + t9);
-        System.out.println("t10: " + t10);
-
         generarGraficaLineas(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
     }
 
@@ -410,20 +393,15 @@ public class Problema {
 
         for (int i = 0; i < 10; ++i) {
             int seed = random.nextInt(10000);
-            System.out.println("semilla " + seed);
             int nPaquetes = 100;
 
             while (nPaquetes <= 1000) {
-                System.out.println("npaquetes " + nPaquetes);
                 Estado e = new Estado(nPaquetes, seed, 1.2, 1, 5);
                 e.generarSolucionInicial2();
 
                 long ini = System.currentTimeMillis();
                 BusquedaHillClimbing(e, 1);
                 long fin = System.currentTimeMillis();
-                System.out.println("temps " + (fin-ini));
-                System.out.println("fin " + fin);
-                System.out.println("inic " + ini);
                 if (i == 0)
                     t1.add(fin - ini);
                 else if (i == 1)
@@ -447,16 +425,6 @@ public class Problema {
                 nPaquetes += 50;
             }
         }
-        System.out.println("t1: " + t1);
-        System.out.println("t2: " + t2);
-        System.out.println("t3: " + t3);
-        System.out.println("t4: " + t4);
-        System.out.println("t5: " + t5);
-        System.out.println("t6: " + t6);
-        System.out.println("t7: " + t7);
-        System.out.println("t8: " + t8);
-        System.out.println("t9: " + t9);
-        System.out.println("t10: " + t10);
     }
 
     private static void experimento5() throws Exception {
@@ -509,9 +477,6 @@ public class Problema {
         for (int i = 0; i < costes.size(); ++i)
             costes.set(i, (double)Math.round(costes.get(i) * 100d) / 100d);
 
-        System.out.println("costes " + costes);
-        System.out.println("teimpo " + tiemposEjec);
-
         generarGraficaLineas2(costes);
         generarGraficaLineas3(tiemposEjec);
         generarGraficaLineas4(felicidad2);
@@ -551,14 +516,9 @@ public class Problema {
         for (int i = 0; i < 20; ++i) {
             tiemposEjec.set(i, tiemposEjec.get(i) /10);
             costes.set(i, costes.get(i)/10);
+            costes.set(i, (double)Math.round(costes.get(i) * 100d) / 100d);
             felicidad2.set(i, felicidad2.get(i)/10);
         }
-
-        for (int i = 0; i < costes.size(); ++i)
-            costes.set(i, (double)Math.round(costes.get(i) * 100d) / 100d);
-
-        System.out.println("costes " + costes);
-        System.out.println("teimpo " + tiemposEjec);
 
         generarGraficaLineas2(costes);
         generarGraficaLineas3(tiemposEjec);
