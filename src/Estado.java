@@ -24,7 +24,6 @@ public class Estado {
         felicidad = 0;
         this.operadores = operadores;
         this.ponderacion = ponderacion;
-
     }
 
     public Estado(Estado e) {

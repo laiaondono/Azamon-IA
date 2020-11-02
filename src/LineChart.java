@@ -7,6 +7,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import javax.swing.*;
 import java.util.ArrayList;
 
+//CLASE USADA PARA LOS EXPERIMENTOS
 public class LineChart extends JFrame {
     private static final long serialVersionUID = 1L;
 

@@ -38,7 +38,6 @@ public class Problema {
                     System.out.println("Introduce un valor del 1 al 9 (exceptuando el 8)");
                     op = in.nextInt();
                 }
-
                 switch (op) {
                     case 1:
                         experimento1();
@@ -65,7 +64,6 @@ public class Problema {
                         experimento9();
                         break;
                 }
-
                 System.out.println("Que deseas realizar?");
                 System.out.println("Hill Climbing: 1");
                 System.out.println("Simulated Annealing: 2");
@@ -141,7 +139,7 @@ public class Problema {
         SearchAgent agent = new SearchAgent(problema, search);
         long fin = System.currentTimeMillis();
 
-        imprimirAcciones(agent.getActions());
+        //imprimirAcciones(agent.getActions());
 
         double precio = (double)Math.round(((Estado) search.getGoalState()).getPrecio() * 100d) / 100d;
 

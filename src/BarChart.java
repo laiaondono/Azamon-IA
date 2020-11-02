@@ -9,6 +9,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+//CLASE USADA PARA LOS EXPERIMENTOS
 public class BarChart extends JFrame {
 
     private static final long serialVersionUID = 1L;

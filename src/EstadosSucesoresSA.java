@@ -41,12 +41,4 @@ public class EstadosSucesoresSA implements SuccessorFunction {
         }
         return sucesores;
     }
-
 }
-
-/**
- mover paquete:
-    o * npaq
- intercanviar:
-    npaq! / (2*(npaq-2)!)
- **/
