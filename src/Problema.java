@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class Problema {
+    //ATRIBUTOS USADOS PARA LOS EXPERIMENTOS
     static private int niteracio = 1;
     static private ArrayList<Integer> felicidad = new ArrayList<>();
 
@@ -131,6 +132,63 @@ public class Problema {
         }
     }
 
+    public static double BusquedaHillClimbing(Estado e, int funcionHeuristica) throws Exception {
+        Problem problema;
+        if (funcionHeuristica == 1) problema = new Problem(e, new EstadosSucesoresHC(), new EstadoFinal(), new FuncionHeuristica1());
+        else problema = new Problem(e, new EstadosSucesoresHC(), new EstadoFinal(), new FuncionHeuristica2());
+        Search search = new HillClimbingSearch();
+        long ini = System.currentTimeMillis();
+        SearchAgent agent = new SearchAgent(problema, search);
+        long fin = System.currentTimeMillis();
+        System.out.println("Tiempo de ejecución = " + (fin - ini) + " ms");
+
+        imprimirAcciones(agent.getActions());
+
+        double precio = (double)Math.round(((Estado) search.getGoalState()).getPrecio() * 100d) / 100d;
+
+        System.out.println("Precio = " + precio);
+        System.out.println("Felicidad = " + ((Estado) search.getGoalState()).getFelicidad());
+
+        FileWriter fichero = null;
+        fichero = new FileWriter("exp5.txt", true);
+        PrintWriter pw = new PrintWriter(fichero);
+        if (niteracio % 20 == 0)
+            pw.println(String.format("%.2f", ((Estado) search.getGoalState()).getPrecio()) + " ");
+        else
+            pw.print(String.format("%.2f", ((Estado) search.getGoalState()).getPrecio()) + " ");
+        fichero.close();
+        ++niteracio;
+
+        felicidad.add(((Estado) search.getGoalState()).getFelicidad());
+
+        return ((Estado) search.getGoalState()).getPrecio();
+    }
+
+    private static double BusquedaSimulatedAnnealing(Estado e, int funcionHeuristica, int steps, int stiter, int k, double lamb) throws Exception {
+        Problem problema;
+        if (funcionHeuristica == 1) problema = new Problem(e, new EstadosSucesoresSA(), new EstadoFinal(), new FuncionHeuristica1());
+        else problema = new Problem(e, new EstadosSucesoresSA(), new EstadoFinal(), new FuncionHeuristica2());
+        Search search = new SimulatedAnnealingSearch(steps, stiter, k, lamb);
+        SearchAgent agent = new SearchAgent(problema, search);
+
+        double precio = (double)Math.round(((Estado) search.getGoalState()).getPrecio() * 100d) / 100d;
+
+        System.out.println("Precio = " + precio);
+        System.out.println("Felicidad = " + ((Estado) search.getGoalState()).getFelicidad());
+
+        felicidad.add(((Estado) search.getGoalState()).getFelicidad());
+
+        return ((Estado) search.getGoalState()).getPrecio();
+    }
+
+    private static void imprimirAcciones(List actions) {
+        for (int i = 0; i < actions.size(); i++) {
+            String action = (String) actions.get(i);
+            System.out.println(action);
+        }
+    }
+
+    //MÉTODOS USADOS PARA LOS EXPERIMENTOS
     private static void experimento1() throws Exception {
         Random random = new Random();
         ArrayList<Double> c1 = new ArrayList<>(), c2  = new ArrayList<>(), c3  = new ArrayList<>();
@@ -158,6 +216,13 @@ public class Problema {
                 }
             }
         }
+
+        for (int i = 0; i < c1.size(); ++i) {
+            c1.set(i, (double)Math.round(c1.get(i) * 100d) / 100d);
+            c2.set(i, (double)Math.round(c1.get(i) * 100d) / 100d);
+            c3.set(i, (double)Math.round(c1.get(i) * 100d) / 100d);
+        }
+
         System.out.println("c1: " + c1);
         System.out.println("c2: " + c2);
         System.out.println("c3: " + c3);
@@ -183,14 +248,19 @@ public class Problema {
                 long fin = System.currentTimeMillis();
                 if (j == 1) {
                     c1.add(coste);
-                    t1.add(fin-ini);
-                }
-                else {
+                    t1.add(fin - ini);
+                } else {
                     c2.add(coste);
-                    t2.add(fin-ini);
+                    t2.add(fin - ini);
                 }
             }
         }
+
+        for (int i = 0; i < c1.size(); ++i) {
+            c1.set(i, (double)Math.round(c1.get(i) * 100d) / 100d);
+            c2.set(i, (double)Math.round(c1.get(i) * 100d) / 100d);
+        }
+
         System.out.println("c1: " + c1);
         System.out.println("c2: " + c2);
         System.out.println("t1: " + t1);
@@ -228,6 +298,9 @@ public class Problema {
         for (int i = 0; i < costes.size(); ++i)
             costes.set(i, costes.get(i)/10);
 
+        for (int i = 0; i < costes.size(); ++i)
+            costes.set(i, (double)Math.round(costes.get(i) * 100d) / 100d);
+
         System.out.println("costes final: " + costes);
         generarGraficaBarras(costes, k, lambda);
     }
@@ -254,6 +327,9 @@ public class Problema {
         }
         for (int i = 0; i < costes.size(); ++i)
             costes.set(i, costes.get(i)/10);
+
+        for (int i = 0; i < costes.size(); ++i)
+            costes.set(i, (double)Math.round(costes.get(i) * 100d) / 100d);
 
         System.out.println("costes final: " + costes);
         generarGraficaBarras2(costes);
@@ -385,7 +461,7 @@ public class Problema {
 
     private static void experimento5() throws Exception {
         FileWriter fichero = null;
-        fichero = new FileWriter("/Users/laia.ondono/Documents/AAAquart-Q1/ia/laboratori/practica1/IA-Busqueda-Local/exp5.txt", false);
+        fichero = new FileWriter("exp5.txt", false);
         PrintWriter pw = new PrintWriter(fichero);
         pw.print("");
         if (null != fichero)
@@ -429,6 +505,9 @@ public class Problema {
             costes.set(i, costes.get(i)/10);
             felicidad2.set(i, felicidad2.get(i)/10);
         }
+
+        for (int i = 0; i < costes.size(); ++i)
+            costes.set(i, (double)Math.round(costes.get(i) * 100d) / 100d);
 
         System.out.println("costes " + costes);
         System.out.println("teimpo " + tiemposEjec);
@@ -475,6 +554,9 @@ public class Problema {
             felicidad2.set(i, felicidad2.get(i)/10);
         }
 
+        for (int i = 0; i < costes.size(); ++i)
+            costes.set(i, (double)Math.round(costes.get(i) * 100d) / 100d);
+
         System.out.println("costes " + costes);
         System.out.println("teimpo " + tiemposEjec);
 
@@ -487,58 +569,6 @@ public class Problema {
         Estado e = new Estado(100, 1234, 1.2, 1, 5);
         e.generarSolucionInicial2();
         BusquedaHillClimbing(e, 1);
-    }
-
-    public static double BusquedaHillClimbing(Estado e, int funcionHeuristica) throws Exception {
-        Problem problema;
-        if (funcionHeuristica == 1) problema = new Problem(e, new EstadosSucesoresHC(), new EstadoFinal(), new FuncionHeuristica1());
-        else problema = new Problem(e, new EstadosSucesoresHC(), new EstadoFinal(), new FuncionHeuristica2());
-        Search search = new HillClimbingSearch();
-        long ini = System.currentTimeMillis();
-        SearchAgent agent = new SearchAgent(problema, search);
-        long fin = System.currentTimeMillis();
-        System.out.println("Tiempo de ejecución = " + (fin - ini) + " ms");
-
-        printActions(agent.getActions());
-
-        System.out.println("Precio = " + ((Estado) search.getGoalState()).getPrecio());
-        System.out.println("Felicidad = " + ((Estado) search.getGoalState()).getFelicidad());
-
-        FileWriter fichero = null;
-        fichero = new FileWriter("/Users/laia.ondono/Documents/AAAquart-Q1/ia/laboratori/practica1/IA-Busqueda-Local/exp5.txt", true);
-        PrintWriter pw = new PrintWriter(fichero);
-        if (niteracio % 20 == 0)
-            pw.println(String.format("%.2f", ((Estado) search.getGoalState()).getPrecio()) + " ");
-        else
-            pw.print(String.format("%.2f", ((Estado) search.getGoalState()).getPrecio()) + " ");
-        fichero.close();
-        ++niteracio;
-
-        felicidad.add(((Estado) search.getGoalState()).getFelicidad());
-
-        return ((Estado) search.getGoalState()).getPrecio();
-    }
-
-    private static double BusquedaSimulatedAnnealing(Estado e, int funcionHeuristica, int steps, int stiter, int k, double lamb) throws Exception {
-        Problem problema;
-        if (funcionHeuristica == 1) problema = new Problem(e, new EstadosSucesoresSA(), new EstadoFinal(), new FuncionHeuristica1());
-        else problema = new Problem(e, new EstadosSucesoresSA(), new EstadoFinal(), new FuncionHeuristica2());
-        Search search = new SimulatedAnnealingSearch(steps, stiter, k, lamb);
-        SearchAgent agent = new SearchAgent(problema, search);
-
-        System.out.println("Precio = " + ((Estado) search.getGoalState()).getPrecio());
-        System.out.println("Felicidad = " + ((Estado) search.getGoalState()).getFelicidad());
-
-        felicidad.add(((Estado) search.getGoalState()).getFelicidad());
-
-        return ((Estado) search.getGoalState()).getPrecio();
-    }
-
-    private static void printActions(List actions) {
-        for (int i = 0; i < actions.size(); i++) {
-            String action = (String) actions.get(i);
-            System.out.println(action);
-        }
     }
 
     private static void generarGraficaBarras(ArrayList<Double> precios, ArrayList<Integer> k, ArrayList<Double> l) {

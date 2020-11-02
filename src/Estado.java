@@ -9,7 +9,7 @@ public class Estado {
     private double precio;
     private int felicidad;
 
-    //atributos usados para los experimentos
+    //ATRIBUTOS USADOS PARA LOS EXPERIMENTOS
     private int operadores;
     private int ponderacion;
 
