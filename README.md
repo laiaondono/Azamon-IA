@@ -1,3 +1,5 @@
+# Azamon-IA
+
 PASOS PARA EJECUTAR LA PRÁCTICA
 1. Configurar el proyecto para que el IDE incluya las siguientes librerías externas:
 	- AIMA
